@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow 
+	xmlns:fx="http://ns.adobe.com/mxml/2009" 	
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx" 
+	creationComplete="init()" 	
+	windowMoveStart="{event.preventDefault()}"
+	width="1024" height="749" 
+	xmlns:interruptions="interruptions.*">
+	
+	<fx:Script>
+		<![CDATA[
+			import flash.utils.Timer;
+			
+			import mx.collections.ArrayList;
+			import mx.events.CloseEvent;
+			import mx.managers.PopUpManager;
+			
+			import spark.events.TitleWindowBoundsEvent;
+			
+			//15s interrupt timer
+			private var interruptTimer:Timer = new Timer(1500,13);		
+			
+			//interruption dismissal time (IDT) timer
+			private var dismissalTimer:Timer = new Timer(1,0);
+			
+			//100ms transition time in between images
+			private var transitionTimer:Timer = new Timer(100,1);
+			
+			private var nBackItem:Number = 0;
+			
+			private var oneBack:Number = 0;
+			private var twoBack:Number = 0;
+			
+			private var hasClicked:Boolean = false;
+			private var twoBackMatch:Boolean = false;
+			
+			//response variables
+			private var truePositives:Number = 0;
+			private var trueNegatives:Number = 0;
+			private var falsePositives:Number = 0;
+			private var falseNegatives:Number = 0;
+			
+			private function init():void
+			{
+				fadeinEffect.play();
+				this.closeButton.visible = false;
+				
+				transitionTimer.addEventListener(TimerEvent.TIMER_COMPLETE,
+					function (event:TimerEvent):void
+					{ 
+						//reset match variables
+						twoBackMatch = false;
+						hasClicked = false;
+						feedbackImg.selectedIndex = 0;
+						
+						//2 in 5 chance of currentIndex == 2-back
+						if (twoBack != 0 &&
+							Math.ceil(Math.random() * 5) <= 2)
+							nBack.selectedIndex = twoBack;
+						else //leave it to chance
+						{
+							var imgIndex:Number = 
+							Math.ceil(Math.random() * 9);
+							nBack.selectedIndex = imgIndex;
+						}
+						trace("\t\t\tcurrent: " + String(nBack.selectedIndex) +
+							" oneBack: " + String(oneBack) + 
+							" twoBack: " + String(twoBack));
+						if (nBack.selectedIndex != 0 &&
+							nBack.selectedIndex == twoBack)
+						{
+							twoBackMatch = true;
+							trace("\t\t\t\ttwoBack match!");				
+						}
+					}
+				);
+				
+				interruptTimer.addEventListener(TimerEvent.TIMER,
+					function (event:TimerEvent):void
+					{
+						if (nBackItem > 2)
+						{
+							//check for false negative
+							if (twoBackMatch && !hasClicked)
+							{
+								trace("\t\t\t\tincorrect response (false negative)");
+								feedbackImg.selectedIndex = 2;
+								falseNegatives++;
+							}
+							else if (!twoBackMatch && !hasClicked)
+							{
+								trace("\t\t\t\tcorrect response (true negative)");
+								trueNegatives++;
+							}
+						}
+						nBackItem++;
+						twoBack = oneBack;
+						oneBack = nBack.selectedIndex;
+						nBack.selectedIndex = 0;
+						transitionTimer.start();
+					}
+				);
+				
+				//enable 'Continue'  after 15s
+				interruptTimer.addEventListener(TimerEvent.TIMER_COMPLETE, 
+					function (event:TimerEvent):void
+					{
+						transitionTimer.stop();
+						
+						currentState = "Dismiss";
+						
+						//report interruption dismissal cue
+						var interruptDismissalText:String =
+						"\n\t\t\tinterruption time  has elapsed, " +
+						"awaiting to continue";				
+						parentApplication.taskResultStream.writeUTFBytes(
+							interruptDismissalText);		
+						trace(interruptDismissalText);		
+						
+						//report interruption performance
+						var interruptPerformanceText:String =
+						"\n\n\t\t\t\ttrue positives: " + String(truePositives) + 
+						"\n\t\t\t\ttrue negatives: " + String(trueNegatives) + 
+						"\n\t\t\t\tfalse positives: " + String(falsePositives) + 
+						"\n\t\t\t\tfalse negatives: " + String(falseNegatives) + 
+						"\n\t\t\t\tcorrect: " + String(trueNegatives + truePositives) + 
+						"\n\t\t\t\tincorrect: " + String(falseNegatives + falsePositives);
+						parentApplication.taskResultStream.writeUTFBytes(
+							interruptPerformanceText);						
+						trace(interruptPerformanceText);
+						
+						parentApplication.nBackResultStream.writeUTFBytes(
+							"\n" + 
+							parentApplication.groupID + "\t" +
+							parentApplication.subjectID + "\t" +
+							parentApplication.currentPuzzle + "\t" +
+							String(truePositives) + "\t" + 
+							String(trueNegatives) + "\t" +
+							String(falsePositives) + "\t" +
+							String(falseNegatives) + "\t" +
+							String(trueNegatives + truePositives) + "\t" +
+							String(falseNegatives + falsePositives) + "\t" +
+							parentApplication.currentState);
+						
+						parentApplication.nBackScore = 
+							trueNegatives + truePositives;
+						
+						dismissalTimer.start();
+					}
+				);
+				interruptTimer.start();	
+				
+			}
+			
+			//on clicking "continue", close the interruption popup
+			protected function closeHandler(event:Event):void
+			{
+				dismissalTimer.stop();
+				parentApplication.interruptionDismissalTime = 
+					(dismissalTimer.currentCount * 10);
+				fadeoutEffect.play();
+				
+				//report interruption close
+				var interruptCloseText:String =
+					"\n\t\t\tclosing interruption; dismissal lag: [" + 
+					String(dismissalTimer.currentCount * 10) + " ms]";				
+				parentApplication.taskResultStream.writeUTFBytes(
+					interruptCloseText);		
+				trace(interruptCloseText);
+				
+				fadeoutEffect.play();
+				PopUpManager.removePopUp(this);
+				
+				//resume the task timer
+				parentApplication.taskTimer.start();				
+				parentApplication.resumptionTimer.start();
+			}	
+			
+			//on mouseOver, highlight shape border
+			protected function mouseOverHandler(event:MouseEvent):void
+			{
+				if (nBackItem > 2)
+				{
+					nBackBorder.color = 0xFFFF00; //yellow
+					nBackBorder.weight = 5;
+				}
+			}
+			
+			//on mouseOut, restore original shape border 
+			protected function mouseOutHandler(event:MouseEvent):void
+			{
+				nBackBorder.color = 0x000000; //black
+				nBackBorder.weight = 1;
+			}
+			
+			//on mouseDown, adjust border and provide feedback
+			protected function mouseDownHandler(event:MouseEvent):void
+			{
+				if (nBackItem > 2 && !hasClicked)
+				{
+					nBackBorder.color = 0xFF0000; //red
+					nBackBorder.weight = 10;
+					
+					//record click
+					hasClicked = true;
+					
+					if (twoBackMatch)
+					{
+						//correct response
+						feedbackImg.selectedIndex = 1;
+						truePositives++;
+						trace("\t\t\t\tcorrect response (true positive)");
+					}
+					else
+					{
+						//false positive
+						feedbackImg.selectedIndex = 2;
+						falsePositives++;
+						trace("\t\t\t\tincorrect response (false positive)");
+					}
+				}
+			}
+			
+			//on mouseOut, restore mouseOver shape border 
+			protected function mouseUpHandler(event:MouseEvent):void
+			{
+				nBackBorder.color = 0xFFFF00; //yellow
+				nBackBorder.weight = 10;
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:states>
+		<s:State name="Interrupt"/>
+		<s:State name="Dismiss"/>
+	</s:states>
+	
+	<fx:Declarations>
+		<s:Fade 
+			id="fadeinEffect" 
+			target="{this}"  
+			alphaFrom="0.0" 
+			alphaTo="1.0" 
+			duration="1000"/>
+		
+		<s:Fade 
+			id="fadeoutEffect" 
+			target="{this}"  
+			alphaFrom="1.0" 
+			alphaTo="0.0" 
+			duration="1000"/>
+		
+	</fx:Declarations>
+	
+	<s:BorderContainer 
+		id="nBackContainer"
+		width="250" 
+		height="250" 
+		verticalCenter="0" 
+		horizontalCenter="0" 
+		mouseUp="mouseUpHandler(event)"
+		mouseDown="mouseDownHandler(event)"
+		mouseOver="mouseOverHandler(event)" 			 
+		mouseOut="mouseOutHandler(event)">
+		
+		<s:borderStroke> 
+			<mx:SolidColorStroke 
+				color="black" 
+				weight="1"  
+				joints="round"  
+				caps="round"
+				id="nBackBorder"/> 
+		</s:borderStroke> 
+		
+		<interruptions:NBack 
+			id="nBack"
+			verticalCenter="0" 
+			horizontalCenter="0"/>
+		
+	</s:BorderContainer>
+	
+	<mx:ViewStack 
+		width="125" 
+		height="125" 
+		id="feedbackImg" 
+		verticalCenter="0" 
+		selectedIndex="0" 
+		horizontalCenter="275">	
+		
+		<s:NavigatorContent/>
+		
+		<s:NavigatorContent>
+			<mx:Image 
+				source="@Embed(source='../assets/right.png')"
+				width="100" height="100"
+				verticalCenter="0" 
+				horizontalCenter="0"/>			
+		</s:NavigatorContent>
+		
+		<s:NavigatorContent>				
+			<mx:Image 
+				source="@Embed(source='../assets/wrong.png')"
+				width="100" height="100"
+				verticalCenter="0" 
+				horizontalCenter="0"/>				
+		</s:NavigatorContent>		
+		
+	</mx:ViewStack>
+	
+	<mx:Text 
+		selectable="false"
+		fontSize="48"
+		top="25"
+		height="200" 
+		horizontalCenter="0" 
+		includeIn="Interrupt">
+		<mx:htmlText>
+			<![CDATA[<p align="center"><b><font color="#397D02">CLICK</font></b> in the box <br>when the current image repeats <br>what you saw 2 images ago.</p>]]>
+		</mx:htmlText>
+	</mx:Text>	
+	
+	<s:BorderContainer 
+		id="dismissContainer"
+		width="100%" 
+		height="100%" 
+		includeIn="Dismiss" 
+		click="closeHandler(event)">
+		
+		<mx:Text 
+			selectable="false"
+			fontSize="48"
+			verticalCenter="0" 
+			horizontalCenter="0">		
+			
+			<mx:htmlText>
+				<![CDATA[<p align="center"><b><font color="#397D02">CLICK</font></b> to continue.</p>]]>
+			</mx:htmlText>
+		</mx:Text>
+		
+	</s:BorderContainer>	
+	
+</s:TitleWindow>

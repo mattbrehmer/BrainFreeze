@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow 
+	xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx"
+	width="1024"
+	windowMoveStart="{event.preventDefault()}"
+	creationComplete="init()" 
+	borderColor="#000000" 
+	cornerRadius="0" 
+	chromeColor="#FF0000">
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.events.CloseEvent;
+			import mx.managers.PopUpManager;
+			
+			import spark.components.Application;
+			
+			//display prompt for 3 seconds
+			private function init():void
+			{
+				fadeinEffect.play();
+				this.closeButton.visible = false;
+				var interruptTimer:Timer = new Timer(1000,3);
+				interruptTimer.addEventListener(
+					TimerEvent.TIMER_COMPLETE,closePrompt);
+				interruptTimer.start();				
+			}
+			
+			//close the prompt, begin interruption
+			private function closePrompt(event:Event):void
+			{
+				fadeoutEffect.play();
+				PopUpManager.removePopUp(this);
+				if (parentApplication.interruptionCondition == 1)					
+					parentApplication.lowInterruptHandler(event);
+				else if (parentApplication.interruptionCondition == 2)
+					parentApplication.highInterruptHandler(event);
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<s:Animate 
+			id="fader"
+			duration="500"
+			repeatBehavior="reverse"
+			repeatCount="0"
+			target="{lbl}">
+			
+			<s:SimpleMotionPath 
+				property="alpha"								
+				valueFrom="1.0" 
+				valueTo="0.0" />
+			
+		</s:Animate>
+		
+		<s:Fade 
+			id="fadeinEffect" 
+			target="{this}"  
+			alphaFrom="0.0" 
+			alphaTo="1.0" 
+			duration="1000"/>
+		
+		<s:Fade 
+			id="fadeoutEffect" 
+			target="{this}"  
+			alphaFrom="1.0" 
+			alphaTo="0.0" 
+			duration="1000"/>
+		
+	</fx:Declarations>	
+		
+	<s:controlBarContent>
+		
+		<mx:Spacer width="100%"/>
+		
+		<mx:Text
+			id="lbl"
+			fontFamily="Arial" 
+			fontSize="35" 
+			color="black" 
+			fontWeight="bold" 
+			fontStyle="normal"	
+			creationComplete="fader.play();" 
+			depth="1" 
+			text="INTERRUPTION PENDING"/>
+		
+		<mx:Spacer width="100%"/>
+		
+	</s:controlBarContent>	
+	
+</s:TitleWindow>

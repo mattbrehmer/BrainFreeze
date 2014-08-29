@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:ViewStack 
+	xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx" 
+	width="200" 
+	height="200">	
+		
+	<s:NavigatorContent/>	
+	
+	<s:NavigatorContent>
+		<mx:Image 
+			source="@Embed(source='../assets/baseball.png')"
+			width="200" height="200"
+			verticalCenter="0" 
+			horizontalCenter="0"/>			
+	</s:NavigatorContent>
+	
+	<s:NavigatorContent>				
+		<mx:Image 
+			source="@Embed(source='../assets/book.png')"
+			width="200" height="200"
+			verticalCenter="0" 
+			horizontalCenter="0"/>				
+	</s:NavigatorContent>
+	
+	<s:NavigatorContent>				
+		<mx:Image 
+			source="@Embed(source='../assets/car.png')"
+			width="200" height="200"
+			verticalCenter="0" 
+			horizontalCenter="0"/>				
+	</s:NavigatorContent>	
+	
+	<s:NavigatorContent>				
+		<mx:Image 
+			source="@Embed(source='../assets/cat.png')"
+			width="200" height="200"
+			verticalCenter="0" 
+			horizontalCenter="0"/>				
+	</s:NavigatorContent>
+	
+	<s:NavigatorContent>				
+		<mx:Image 
+			source="@Embed(source='../assets/fish.png')"
+			width="200" height="200"
+			verticalCenter="0" 
+			horizontalCenter="0"/>				
+	</s:NavigatorContent>
+	
+	<s:NavigatorContent>				
+		<mx:Image 
+			source="@Embed(source='../assets/fork.png')"
+			width="200" height="200"
+			verticalCenter="0" 
+			horizontalCenter="0"/>				
+	</s:NavigatorContent>
+	
+	<s:NavigatorContent>				
+		<mx:Image 
+			source="@Embed(source='../assets/pencil.png')"
+			width="200" height="200"
+			verticalCenter="0" 
+			horizontalCenter="0"/>				
+	</s:NavigatorContent>
+	
+	<s:NavigatorContent>				
+		<mx:Image 
+			source="@Embed(source='../assets/pizza.png')"
+			width="200" height="200"
+			verticalCenter="0" 
+			horizontalCenter="0"/>				
+	</s:NavigatorContent>
+	
+	<s:NavigatorContent>				
+		<mx:Image 
+			source="@Embed(source='../assets/shoe.png')"
+			width="200" height="200"
+			verticalCenter="0" 
+			horizontalCenter="0"/>				
+	</s:NavigatorContent>
+	
+</mx:ViewStack>

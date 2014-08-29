@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow 
+	xmlns:fx="http://ns.adobe.com/mxml/2009" 	
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx" 
+	creationComplete="init()" 	
+	windowMoveStart="{event.preventDefault()}"
+	width="1024" height="749" 
+	xmlns:interruptions="interruptions.*">
+	
+	<fx:Script>
+		<![CDATA[
+			import flash.utils.Timer;
+			
+			import mx.collections.ArrayList;
+			import mx.events.CloseEvent;
+			import mx.managers.PopUpManager;
+			
+			import spark.events.TitleWindowBoundsEvent;
+			
+			//15s interrupt timer
+			private var interruptTimer:Timer = new Timer(1500,13);		
+			
+			//interruption dismissal time (IDT) timer
+			private var dismissalTimer:Timer = new Timer(1,0);
+			
+			//100ms transition time in between images
+			private var transitionTimer:Timer = new Timer(100,1);
+			
+			private var oneBack:Number = 0;
+			private var twoBack:Number = 0;
+									
+			private function init():void
+			{
+				fadeinEffect.play();
+				this.closeButton.visible = false;
+				
+				transitionTimer.addEventListener(TimerEvent.TIMER_COMPLETE,
+					function (event:TimerEvent):void
+					{ 
+						//2 in 5 chance of currentIndex == 2-back
+						if (twoBack != 0 &&
+							Math.ceil(Math.random() * 5) <= 2)
+							nBack.selectedIndex = twoBack;
+						else //leave it to chance
+						{
+							var imgIndex:Number = 
+								Math.ceil(Math.random() * 9);
+							nBack.selectedIndex = imgIndex;
+						}				
+					}
+				);
+				
+				interruptTimer.addEventListener(TimerEvent.TIMER,
+					function (event:TimerEvent):void
+					{
+							twoBack = oneBack;
+							oneBack = nBack.selectedIndex;
+							nBack.selectedIndex = 0;
+							transitionTimer.start();	
+					}
+				);
+								
+				//enable 'Continue' button after 15s
+				interruptTimer.addEventListener(TimerEvent.TIMER_COMPLETE, 
+					function (event:TimerEvent):void
+					{
+						transitionTimer.stop();
+						
+						currentState = "Dismiss";
+ 						
+						//report interruption dismissal cue
+						var interruptDismissalText:String =
+						"\n\t\t\tinterruption time  has elapsed, " +
+						"awaiting to continue";				
+						parentApplication.taskResultStream.writeUTFBytes(
+							interruptDismissalText);		
+						trace(interruptDismissalText);
+						
+						dismissalTimer.start();
+					}
+				);
+				interruptTimer.start();	
+				
+			}
+						
+			//on clicking "continue", close the interruption popup
+			protected function closeHandler(event:Event):void
+			{
+				dismissalTimer.stop();
+				parentApplication.interruptionDismissalTime = 
+					(dismissalTimer.currentCount * 10);
+				fadeoutEffect.play();
+				
+				//report interruption close
+				var interruptCloseText:String =
+					"\n\t\t\tclosing interruption; dismissal lag: [" + 
+					String(dismissalTimer.currentCount * 10) + " ms]";				
+				parentApplication.taskResultStream.writeUTFBytes(
+					interruptCloseText);		
+				trace(interruptCloseText);
+				
+				fadeoutEffect.play();
+				PopUpManager.removePopUp(this);
+				
+				//resume the task timer
+				parentApplication.taskTimer.start();				
+				parentApplication.resumptionTimer.start();
+			}			
+			
+		]]>
+	</fx:Script>
+	<s:states>
+		<s:State name="Interrupt"/>
+		<s:State name="Dismiss"/>
+	</s:states>
+	
+	<fx:Declarations>
+		<s:Fade 
+			id="fadeinEffect" 
+			target="{this}"  
+			alphaFrom="0.0" 
+			alphaTo="1.0" 
+			duration="1000"/>
+		
+		<s:Fade 
+			id="fadeoutEffect" 
+			target="{this}"  
+			alphaFrom="1.0" 
+			alphaTo="0.0" 
+			duration="1000"/>
+		
+	</fx:Declarations>
+	
+	<s:BorderContainer 
+		id="nBackContainer"
+		width="250" 
+		height="250" 
+		verticalCenter="0" 
+		horizontalCenter="0" 
+		includeIn="Interrupt">
+		
+		<s:borderStroke> 
+			<mx:SolidColorStroke 
+				color="black" 
+				weight="1"  
+				joints="round"  
+				caps="round"
+				id="nBackBorder"/> 
+		</s:borderStroke> 
+		
+		<interruptions:NBack 
+			id="nBack"
+			verticalCenter="0" 
+			horizontalCenter="0"/>
+		
+	</s:BorderContainer>
+	
+	<mx:Text 
+		selectable="false"
+		fontSize="48"
+		top="50" 
+		height="150"
+		horizontalCenter="0"
+		includeIn="Interrupt">
+		<mx:htmlText>
+			<![CDATA[<p align="center"><b><font color="#FF0000">WATCH</font></b> these images. <br><b><font color="#FF0000">DO NOT CLICK</font></b> on them.</p>]]>
+		</mx:htmlText>
+	</mx:Text>	
+	
+	<s:BorderContainer 
+		id="dismissContainer"
+		width="100%" 
+		height="100%" 
+		includeIn="Dismiss" 
+		click="closeHandler(event)">
+		
+		<mx:Text 
+			selectable="false"
+			fontSize="48"
+			verticalCenter="0" 
+			horizontalCenter="0">		
+		
+			<mx:htmlText>
+				<![CDATA[<p align="center"><b><font color="#397D02">CLICK</font></b> to continue.</p>]]>
+			</mx:htmlText>
+		</mx:Text>
+		
+	</s:BorderContainer>
+		
+</s:TitleWindow>

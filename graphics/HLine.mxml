@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Graphic
+	xmlns:fx="http://ns.adobe.com/mxml/2009"
+	xmlns:s="library://ns.adobe.com/flex/spark"
+	xmlns:mx="library://ns.adobe.com/flex/halo"
+	implements="graphics.IDraggableGraphic" 
+	mouseOver="mouseOverHandler(event)" 
+	mouseOut="mouseOutHandler(event)"  
+	maxWidth="185" maxHeight="35"
+	height="35" width="185">
+	
+	<fx:Script>
+		<![CDATA[
+			private var _fillColor:uint = 0x000000;
+			
+			[Bindable]
+			public function get fillColor():uint {
+				return _fillColor;
+			}
+			
+			public function set fillColor(color:uint):void {
+				_fillColor = color;
+			}
+			
+			//on mouseOver, highlight shape border
+			protected function mouseOverHandler(event:MouseEvent):void
+			{
+				lineColor.color=0xEE0000;
+			}
+			
+			// on mouseOut, restore original shape border 
+			protected function mouseOutHandler(event:MouseEvent):void
+			{
+				lineColor.color=fillColor;
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:Group 
+		maxWidth="185" 
+		maxHeight="35" 
+		height="35" 
+		width="185">		
+		<s:Line 
+			xFrom="30" 
+			xTo="155" 
+			verticalCenter="0">
+			<s:stroke>
+				<s:SolidColorStroke 
+					id="lineColor" 
+					color="{fillColor}" 
+					weight="15" 
+					caps="round" 
+					joints="bevel"/>
+			</s:stroke>
+		</s:Line>		
+	</s:Group>
+	
+</s:Graphic>

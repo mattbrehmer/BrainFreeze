@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:ViewStack 
+	xmlns:fx="http://ns.adobe.com/mxml/2009"			  
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx" 
+	xmlns:puzzles="puzzles.*">
+	
+	<s:NavigatorContent>				
+		<puzzles:SCB1/>				
+	</s:NavigatorContent>
+	
+	<s:NavigatorContent>				
+		<puzzles:SCB2/>				
+	</s:NavigatorContent>
+	
+	<s:NavigatorContent>				
+		<puzzles:SCB3/>				
+	</s:NavigatorContent>	
+	
+	<s:NavigatorContent>				
+		<puzzles:SCB4/>				
+	</s:NavigatorContent>
+	
+	<s:NavigatorContent>				
+		<puzzles:SCB5/>				
+	</s:NavigatorContent>
+	
+	<s:NavigatorContent>				
+		<puzzles:SCB6/>				
+	</s:NavigatorContent>
+	
+	<s:NavigatorContent>				
+		<puzzles:SCB7/>				
+	</s:NavigatorContent>
+	
+	<s:NavigatorContent>				
+		<puzzles:SCB8/>				
+	</s:NavigatorContent>
+	
+	<s:NavigatorContent>				
+		<puzzles:SCB9/>				
+	</s:NavigatorContent>
+	
+	<s:NavigatorContent>				
+		<puzzles:SCB10/>				
+	</s:NavigatorContent>
+	
+</mx:ViewStack>

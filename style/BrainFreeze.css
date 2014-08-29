@@ -1,0 +1,54 @@
+/* CSS file */
+@namespace s "library://ns.adobe.com/flex/spark";
+@namespace mx "library://ns.adobe.com/flex/mx";
+
+
+s|BorderContainer
+{
+	backgroundColor: #FFFFFF;
+	borderStyle: solid;
+	borderVisible: false;
+	borderWeight: 1;
+	dropShadowVisible: false;
+}
+mx|ApplicationControlBar
+{
+	contentBackgroundAlpha: 1.0;
+	contentBackgroundColor: #DDDDDD;
+	dropShadowVisible: true;
+}
+global
+{
+	text-align: center;
+	content-background-alpha: 0.77;
+}
+s|Button
+{
+	cornerRadius: 10;
+	fontFamily: Arial;
+	fontSize: 20;
+}
+s|TitleWindow
+{
+	backgroundAlpha: 1.0;
+	contentBackgroundAlpha: 1.0;
+	cornerRadius: 20;
+}
+
+.alertTitle{
+	color:red;
+	fontWeight:bold;
+}
+mx|Alert{
+	backgroundColor:#E3E3E3;
+	color: #323232;
+	accentColor: red;
+	borderColor: red;
+	borderAlpha: 1.0;
+	headerHeight:30;
+	fontSize: 24;
+	titleStyleName:alertTitle;
+	cornerRadius: 10; 
+	fontFamily: Arial;
+}
+	

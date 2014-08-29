@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:BorderContainer
+	xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx"
+	xmlns:graphics="graphics.*"
+	width="1024" height="699"
+	name="Line up all shapes in order of size, going top to bottom on the screen"
+	creationComplete="initialConfig(event)"
+	dragEnter="parentApplication.dragEnterHandler(event);" 		
+	dragDrop="parentApplication.dragDropHandler(event);">	
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.core.IUIComponent;
+			import mx.core.IVisualElement;
+			import mx.events.FlexEvent;
+			
+			protected function initialConfig(event:FlexEvent):void
+			{
+				if (this.numElements > 0)
+				{					
+					var i:int = 0;
+					
+					var elem:IVisualElement;
+					var elemName:String;
+					var xPos:Number;
+					var yPos:Number;
+					
+					trace("\t[0 ms]: initial puzzle config:"); 
+					parentApplication.taskResultStream.writeUTFBytes(
+						"\n\t[0 ms]: initial puzzle config:");
+					
+					//compare x and y coordinates of all lines in the container
+					for (i = 0; i < this.numElements; i++)
+					{						
+						elem = this.getElementAt(i);
+						elemName = IUIComponent(elem).name;
+						xPos = IUIComponent(elem).x;
+						yPos = IUIComponent(elem).y;					
+						
+						// report all starting position positions
+						trace("\t\telement " + String(i) + " (" + elemName + "): (" + 
+							xPos + ", " + yPos + ")");
+						parentApplication.taskResultStream.writeUTFBytes(
+							"\n\t\telement " + String(i) + " (" + elemName + "): (" + 
+							xPos + ", " + yPos + ")");
+					}
+				}
+			}				
+		]]>
+	</fx:Script>
+	
+	<graphics:Triangle 
+		fillColor="#FF0000" 						   
+		name="0.25_red_triangle" 
+		depth="1"
+		mouseDown="parentApplication.initiateDrag(event)"
+		x="400" y="200"
+		scaleX="0.25" scaleY="0.25"/>	
+			
+	<graphics:Square 
+		fillColor="#6666FF" 						   
+		name="0.75_blue_square" 
+		depth="1"
+		mouseDown="parentApplication.initiateDrag(event)"
+		x="150" y="100"
+		scaleX="0.75" scaleY="0.75"/>
+	
+	<graphics:Circle 
+		fillColor="#FFFF00" 						   
+		name="1.25_yellow_circle" 
+		depth="1"
+		mouseDown="parentApplication.initiateDrag(event)"
+		x="500" y="450"
+		scaleX="1.25" scaleY="1.25"/>
+	
+	<graphics:Star 
+		fillColor="#FFA500"						   
+		name="0.5_orange_star" 
+		depth="1"
+		mouseDown="parentApplication.initiateDrag(event)"
+		x="650" y="450"
+		scaleX="0.5" scaleY="0.5"/>
+	
+	<graphics:Circle 
+		fillColor="#FF00FF" 						   
+		name="1.0_pink_circle" 
+		depth="1"
+		mouseDown="parentApplication.initiateDrag(event)"
+		x="100" y="450"/>
+	
+	<graphics:Triangle 
+		fillColor="#6666FF" 						   
+		name="1.75_blue_triangle" 
+		depth="1"
+		mouseDown="parentApplication.initiateDrag(event)"
+		x="500" y="150" 
+		scaleX="1.75" scaleY="1.75"/>
+	
+</s:BorderContainer>

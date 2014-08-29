@@ -1,0 +1,404 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:WindowedApplication
+	xmlns:fx="http://ns.adobe.com/mxml/2009"
+	xmlns:s="library://ns.adobe.com/flex/spark"
+	xmlns:mx="library://ns.adobe.com/flex/mx"
+	xmlns:halo="library://ns.adobe.com/flex/halo"
+	xmlns:graphics="graphics.*" 
+	useNativeDragManager="false" 
+	backgroundColor="#DDDDDD" 
+	showStatusBar="false" 
+	pageTitle="BrainFreeze" 
+	currentState="initState" 
+	width="1024" height="749" 
+	maxWidth="1024" maxHeight="749" 
+	xmlns:puzzles="puzzles.*"
+	dragEnter="dragEnterHandler(event)"
+	dragDrop="invalidDragDrop(event)">
+	
+	<fx:Style source="style/BrainFreeze.css"/>
+	
+	<fx:Script source="source/BrainFreezeInclude.as"/>
+			
+	<s:states>		
+		<s:State name="initState"/>
+		<s:State name="launchState"/>
+		<s:State name="sc_practice_puzzle"/>	
+		<s:State name="sc_train"/>
+		<s:State name="sc_a"/>
+		<s:State name="sc_b"/>
+		<s:State name="sc_c"/>
+		<s:State name="sqp_practice_puzzle"/>
+		<s:State name="sqp_train"/>
+		<s:State name="sqp_a"/>
+		<s:State name="sqp_b"/>		
+		<s:State name="sqp_c"/>	
+	</s:states>
+	<fx:Declarations>
+		<s:RadioButtonGroup id="MainTaskOrder"/>
+	</fx:Declarations>
+		
+	<s:TileGroup 
+		horizontalCenter="0" 
+		verticalCenter="0" 
+		depth="0" 
+		includeIn="launchState" 
+		orientation="columns" 
+		requestedColumnCount="3">
+		
+		<s:Group 
+			id="int_GroupBttns" 
+			includeIn="launchState">
+			<s:layout>
+				<s:TileLayout 
+					requestedRowCount="2" 
+					orientation="columns"/>
+			</s:layout>
+			
+			<s:Button
+				id="intLowBttn"
+				label="Interruption 1 Example" 
+				height="100" 
+				width="250"
+				click="lowInterruptHandler(event)" 
+				includeIn="launchState"/>
+			
+			<s:Button
+				id="intHighBttn"
+				label="Interruption 2 Example" 
+				height="100" 				
+				width="250"
+				click="highInterruptHandler(event)"  
+				includeIn="launchState"/>
+			
+		</s:Group>
+		
+		<s:Group 
+			id="sc_GroupBttns" 
+			includeIn="launchState"
+			enabled="{!mainTaskOrder}">
+			<s:layout>
+				<s:TileLayout 
+					requestedRowCount="5" 
+					orientation="columns"/>
+			</s:layout>
+		
+			<s:Button 
+				id="sc_pracBttn"
+				click="sc_pracClickHandler(event)" 
+				height="100" 				
+				width="250"
+				enabled="true" 
+				label="Task A Example" 
+				includeIn="launchState"/>
+			
+			<s:Button 
+				id="sc_trainBttn"
+				label="Task A Practice" 
+				height="100" 
+				width="250"
+				enabled="true" 
+				click="{
+				sc_trainBttn.enabled = false;
+				puzzleSetSwitcher(event,'sc_train');				
+				}" 
+				includeIn="launchState"/>		
+			
+			<s:Button 
+				id="sc_aBttn"
+				label="Task A.1" 
+				click="{
+				sc_aBttn.enabled = false;
+				puzzleSetSwitcher(event,'sc');				
+				}"
+				height="100" 
+				width="250"
+				enabled="true" 
+				includeIn="launchState"/>		
+			
+			<s:Button 
+				id="sc_bBttn"
+				label="Task A.2" 
+				width="250"
+				height="100" 
+				enabled="true" 
+				click="{
+				sc_bBttn.enabled = false;
+				puzzleSetSwitcher(event,'sc');				
+				}"
+				includeIn="launchState"/>
+			
+			<s:Button 
+				id="sc_cBttn"
+				label="Task A.3" 
+				width="250"
+				height="100" 
+				enabled="true" 
+				click="{
+				sc_cBttn.enabled = false;
+				puzzleSetSwitcher(event,'sc');				
+				}" 
+				includeIn="launchState"/>
+		
+		</s:Group>
+		
+		<s:Group 
+			id="sqp_GroupBttns" 
+			includeIn="launchState" 
+			enabled="{mainTaskOrder}">
+			<s:layout>
+				<s:TileLayout 
+					requestedRowCount="5" 
+					orientation="columns"/>
+			</s:layout>
+		
+			<s:Button 
+				id="sqp_pracBttn"
+				label="Task B Example" 
+				click="sqp_pracClickHandler(event)" 
+				height="100"
+				width="250"
+				enabled="true" 
+				includeIn="launchState"/>
+			
+			<s:Button 
+				id="sqp_trainBttn"
+				height="100" 
+				width="250"
+				label="Task B Practice"			
+				enabled="true" 			
+				click="{
+				sqp_trainBttn.enabled = false;
+				puzzleSetSwitcher(event,'sqp_train');				
+				}"
+				includeIn="launchState"/>
+			
+			<s:Button 
+				id="sqp_aBttn"
+				click="{
+				sqp_aBttn.enabled = false;
+				puzzleSetSwitcher(event,'sqp');				
+				}"
+				height="100" 
+				width="250"
+				enabled="true" 
+				label="Task B.1" 
+				includeIn="launchState"/>
+			
+			<s:Button 
+				id="sqp_bBttn"
+				height="100" 
+				width="250"
+				label="Task B.2"			
+				enabled="true" 
+				click="{
+				sqp_bBttn.enabled = false;
+				puzzleSetSwitcher(event,'sqp');				
+				}"
+				includeIn="launchState"/>
+			
+			<s:Button 
+				id="sqp_cBttn"
+				height="100" 
+				width="250"
+				label="Task B.3"			
+				enabled="true" 
+				click="{
+				sqp_cBttn.enabled = false;
+				puzzleSetSwitcher(event,'sqp');				
+				}"
+				includeIn="launchState"/>
+			
+		</s:Group>
+				
+	</s:TileGroup>
+	
+	<mx:ApplicationControlBar 
+		width="100%" 
+		height="50" 
+		bottom="0" 
+		height.sqp_practice_puzzle="100" 
+		height.sqp_train="100" 
+		height.sqp_a="100" 
+		height.sqp_b="100" 
+		height.sqp_c="100">		
+		
+		<s:Button
+			id="fsBttn0"
+			label="max" 
+			height="40" 
+			click="{
+				if (stage.displayState == StageDisplayState.NORMAL)
+					stage.displayState = StageDisplayState.FULL_SCREEN;
+			}" 
+			includeIn="initState,launchState"/>
+		
+		<mx:ProgressBar 
+			width="50%" 
+			trackHeight="30"  
+			id="progressBar" 
+			visible="false"
+			minimum="0" 
+			maximum="6" 
+			labelPlacement="left"
+			fontSize="20"
+			label="Completed: 0 / 6" 
+			direction="right" 
+			mode="manual" 
+			includeIn="launchState"/>
+		
+		<mx:Spacer 
+			width.sqp_practice_puzzle="100%" 
+			width.sqp_train="100%" 
+			width.sqp_a="100%" 
+			width.sqp_b="100%" 
+			width.sqp_c="100%"/>
+		
+		<mx:Text 
+			id="sqp_instruction"
+			text="{sqp_instructionText}"
+			fontFamily="Arial" 
+			fontSize="24"
+			includeIn="sqp_a,sqp_b,sqp_c,sqp_train,sqp_practice_puzzle"/>
+		
+		<mx:Spacer 
+			width="100%"/>
+		
+		<s:Button 
+			label="Done" 
+			height="40" 
+			click="doneBttn_clickHandler(event)" 
+			id="doneBttn" 
+			visible="false"
+			includeIn="sc_practice_puzzle,sqp_practice_puzzle"/>
+		
+		<s:Button 
+			label="Next" 
+			height="40" 
+			click="nextBttn_clickHandler(event)" 
+			id="nextBttn" 
+			visible="false"
+			includeIn="sc_train,sc_a,sc_b,sc_c,sqp_train,sqp_a,sqp_b,sqp_c"/>
+				
+		<s:Button
+			id="launchStateBttn"
+			height="40" 
+			includeIn="initState" 
+			click="{
+				initOutput();
+				initRandomTask();
+				currentState='launchState';
+			}" 
+			label="Next"/>
+		
+	</mx:ApplicationControlBar>
+	
+	<s:Group 
+		id="taskContainer"
+		horizontalCenter="0" 
+		depth="0" 
+		top="0"
+		width="1024" height="699">
+	
+		<s:BorderContainer 
+			includeIn="launchState,sc_a,sc_b,sc_c,sc_practice_puzzle,sc_train" 
+			id="sc_container" 
+			horizontalCenter="0" 
+			depth="0" 
+			top="0"
+			width="1024" height="699" 
+			visible="false">
+			
+			<puzzles:SCA
+				id="sc_puzzle_stack_a"
+				includeIn="sc_a"/>
+			
+			<puzzles:SCB
+				id="sc_puzzle_stack_b"
+				includeIn="sc_b"/>
+			
+			<puzzles:SCC
+				id="sc_puzzle_stack_c"
+				includeIn="sc_c"/>
+			
+			<puzzles:SCTrain
+				id="sc_puzzle_stack_train"
+				includeIn="sc_train"/>
+			
+		</s:BorderContainer>
+		
+		<s:Group
+			id="sqpGroup" 
+			horizontalCenter="0" 
+			top="0"
+			depth="0"
+			includeIn="sqp_a,sqp_b,sqp_c,sqp_train,sqp_practice_puzzle">
+			
+			<s:layout>
+				<s:VerticalLayout 
+					gap="0" 
+					paddingLeft="0" 
+					paddingRight="0" 
+					paddingTop="0" 
+					paddingBottom="0"/>
+			</s:layout>
+					
+			<s:BorderContainer 
+				id="sqpContainer"
+				depth="0" 
+				width="1024" height="649">		
+				
+				<puzzles:SqPA 
+					id="sqp_puzzle_stack_a"
+					includeIn="sqp_a"/>
+				
+				<puzzles:SqPB 
+					id="sqp_puzzle_stack_b"
+					includeIn="sqp_b"/>
+				
+				<puzzles:SqPC
+					id="sqp_puzzle_stack_c"
+					includeIn="sqp_c"/>
+				
+				<puzzles:SqPTrain 
+					id="sqp_puzzle_stack_train"
+					includeIn="sqp_train"/>
+				
+			</s:BorderContainer>
+			
+		</s:Group>
+		
+	</s:Group>
+	<mx:Form 
+		includeIn="initState" 
+		horizontalCenter="0" 
+		verticalCenter="0">
+		<mx:FormItem label="Group ID:">
+			<s:TextInput id="groupIDNum"/>
+		</mx:FormItem>
+		<mx:FormItem label="Subject ID:">
+			<s:TextInput id="subjectIDNum"/>
+		</mx:FormItem>		
+		<mx:FormItem label="Interrupt State Sequence:">
+			<s:ComboBox 
+				id="interruptStateCB"
+				dataProvider="{interruptState}" 
+				selectedIndex="0"
+				includeIn="initState" 
+				change="interruptStateCB_changeHandler(event)"/>
+		</mx:FormItem>
+		<mx:FormItem label="Main Task Order:">
+			<s:RadioButton 
+				label="A-B" 
+				groupName="MainTaskOrder" 
+				selected="true" 
+				change="mainTaskOrderClickHandler(event)"/>
+			<s:RadioButton 
+				label="B-A" 
+				groupName="MainTaskOrder"
+				change="mainTaskOrderClickHandler(event)"/>
+		</mx:FormItem>
+		
+	</mx:Form>
+	
+</s:WindowedApplication>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow 
+	xmlns:fx="http://ns.adobe.com/mxml/2009" 	
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx" 
+	creationComplete="init()" 	
+	windowMoveStart="{event.preventDefault()}"
+	width="1024" height="749">
+	
+	<fx:Script>
+		<![CDATA[
+			
+			import mx.collections.ArrayList;
+			import mx.events.CloseEvent;
+			import mx.managers.PopUpManager;
+			
+			import spark.events.TitleWindowBoundsEvent;
+									
+			private function init():void
+			{				
+				this.closeButton.visible = false;
+			}
+						
+			//on clicking "continue", close the interruption popup
+			protected function closeHandler(event:Event):void
+			{				
+				fadeoutEffect.play();
+				PopUpManager.removePopUp(this);
+			}			
+			
+		]]>
+	</fx:Script>
+	<s:states>
+		<s:State name="Dismiss"/>
+	</s:states>
+	
+	<fx:Declarations>
+		
+		<s:Fade 
+			id="fadeoutEffect" 
+			target="{this}"  
+			alphaFrom="1.0" 
+			alphaTo="0.0" 
+			duration="1000"/>
+		
+	</fx:Declarations>
+	
+	<s:BorderContainer 
+		id="dismissContainer"
+		width="100%" 
+		height="100%" 
+		click="closeHandler(event)">
+		
+		<mx:Text 
+			selectable="false"
+			fontSize="48"
+			verticalCenter="0" 
+			horizontalCenter="0">		
+		
+			<mx:htmlText>
+				<![CDATA[
+<p align="center"><b><font color="#397D02">CLICK</font></b> to continue.
+The experimenter will tell
+you what to do next.</p>
+				]]>
+			</mx:htmlText>
+		</mx:Text>
+		
+	</s:BorderContainer>
+		
+</s:TitleWindow>

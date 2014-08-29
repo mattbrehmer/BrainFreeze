@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:BorderContainer 
+	xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx"
+	xmlns:graphics="graphics.*"
+	width="1024" height="649"
+	creationComplete="initialConfig(event)"
+	dragEnter="parentApplication.dragEnterHandler(event);" 		
+	dragDrop="parentApplication.dragDropHandler(event);">	
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.core.IUIComponent;
+			import mx.core.IVisualElement;
+			import mx.events.FlexEvent;
+			
+			protected function initialConfig(event:FlexEvent):void
+			{
+				if (this.numElements > 0)
+				{					
+					var i:int = 0;
+					
+					var elem:IVisualElement;
+					var elemName:String;
+					var xPos:Number;
+					var yPos:Number;
+					
+					trace("\t[0 ms]: initial puzzle config:"); 
+					parentApplication.taskResultStream.writeUTFBytes(
+						"\n\t[0 ms]: initial puzzle config:");
+					
+					//compare x and y coordinates of all lines in the container
+					for (i = 0; i < this.numElements; i++)
+					{						
+						elem = this.getElementAt(i);
+						elemName = IUIComponent(elem).name;
+						xPos = IUIComponent(elem).x;
+						yPos = IUIComponent(elem).y;					
+						
+						// report all starting position positions
+						trace("\t\telement " + String(i) + " (" + elemName + "): (" + 
+							xPos + ", " + yPos + ")");
+						parentApplication.taskResultStream.writeUTFBytes(
+							"\n\t\telement " + String(i) + " (" + elemName + "): (" + 
+							xPos + ", " + yPos + ")");
+					}
+				}
+			}				
+		]]>
+	</fx:Script>
+	
+	<graphics:HLine 
+		name="hLine1" 
+		mouseDown="parentApplication.initiateDrag(event)" 
+		fillColor="#000000"  
+		x="425" 
+		y="250"/>
+	
+	<graphics:HLine 
+		name="hLine2" 
+		mouseDown="parentApplication.initiateDrag(event)" 
+		fillColor="#000000"  
+		x="575" 
+		y="250"/>
+	
+	<graphics:HLine 
+		name="hLine3"
+		mouseDown="parentApplication.initiateDrag(event)" 
+		fillColor="#000000" 
+		x="575" 
+		y="400"/>
+	
+	<graphics:HLine 
+		name="hLine4" 
+		mouseDown="parentApplication.initiateDrag(event)" 
+		fillColor="#000000"  
+		x="125" 
+		y="400"/>
+	
+	<graphics:HLine 
+		name="hLine5"
+		mouseDown="parentApplication.initiateDrag(event)" 
+		fillColor="#000000" 
+		x="575" 
+		y="100"/>
+	
+	<graphics:HLine 
+		name="hLine6"
+		mouseDown="parentApplication.initiateDrag(event)" 
+		fillColor="#000000" 
+		x="275" 
+		y="100"/>
+	
+	<graphics:HLine 
+		name="hLine7" 
+		mouseDown="parentApplication.initiateDrag(event)" 
+		fillColor="#000000" 
+		x="275" 
+		y="250"/>
+	
+	<graphics:HLine 
+		name="hLine8"
+		mouseDown="parentApplication.initiateDrag(event)" 
+		fillColor="#000000" 
+		x="425" 
+		y="400"/>
+	
+	<graphics:HLine 
+		name="hLine9"
+		mouseDown="parentApplication.initiateDrag(event)" 
+		fillColor="#000000" 
+		x="275" 
+		y="400"/>
+	
+	<graphics:VLine 
+		name="vLine1"
+		mouseDown="parentApplication.initiateDrag(event)" 
+		fillColor="#000000" 
+		x="275" 
+		y="100"/>
+	
+	<graphics:VLine 
+		name="vLine2"
+		mouseDown="parentApplication.initiateDrag(event)" 
+		fillColor="#000000" 
+		x="725" 
+		y="250"/>
+	<graphics:VLine 
+		name="vLine3"
+		mouseDown="parentApplication.initiateDrag(event)" 
+		fillColor="#000000" 
+		x="425" 
+		y="250"/>
+	
+	<graphics:VLine 
+		name="vLine4"
+		mouseDown="parentApplication.initiateDrag(event)" 
+		fillColor="#000000" 
+		x="725" 
+		y="400"/>
+	
+	<graphics:VLine 
+		name="vLine5"
+		mouseDown="parentApplication.initiateDrag(event)" 
+		fillColor="#000000" 
+		x="125" 
+		y="250"/>
+	
+	<graphics:VLine 
+		name="vLine6"
+		mouseDown="parentApplication.initiateDrag(event)" 
+		fillColor="#000000" 
+		x="725" 
+		y="100"/>
+	
+	<graphics:VLine 
+		name="vLine7"
+		mouseDown="parentApplication.initiateDrag(event)" 
+		fillColor="#000000" 
+		x="275" 
+		y="250"/>
+	
+</s:BorderContainer>

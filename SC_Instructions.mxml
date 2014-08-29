@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow 
+	xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx"
+	horizontalCenter="0" 
+	verticalCenter="0"
+	width="1024" height="749"
+	close="sc_instruction_closeHandler(event)"
+	windowMoveStart="{event.preventDefault()}"
+	creationComplete="init()">
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.events.CloseEvent;
+			import mx.managers.PopUpManager;
+			
+			import spark.components.Application;
+			
+			private function init():void
+			{
+				fadeinEffect.play();
+				this.closeButton.visible = false;	
+			}
+
+			protected function sc_instruction_closeHandler(event:Event):void
+			{
+				fadeoutEffect.play();
+				PopUpManager.removePopUp(this);
+				parentApplication.sc_instruction_closeHandler();
+			}
+
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<s:Fade 
+			id="fadeinEffect" 
+			target="{this}"  
+			alphaFrom="0.0" 
+			alphaTo="1.0" 
+			duration="1000"/>
+		
+		<s:Fade 
+			id="fadeoutEffect" 
+			target="{this}"  
+			alphaFrom="1.0" 
+			alphaTo="0.0" 
+			duration="1000"/>
+		
+	</fx:Declarations>	
+	
+	
+	<s:controlBarContent>
+		
+		<mx:Spacer width="100%"/>
+		
+		<s:Button 
+			label="Continue" 
+			click="sc_instruction_closeHandler(event)" 
+			height="40" 
+			id="contBttn"/>
+		
+	</s:controlBarContent>
+	
+	<s:Label 
+		id="sc_suppl_instruction_text"
+		text="You will read instructions on the screen like this one:" 
+		verticalAlign="middle" 
+		visible="false" 
+		horizontalCenter="0" 
+		verticalCenter="-50"
+		width="100%" 
+		fontFamily="Arial" 
+		fontSize="24" 
+		color="#666666"/>
+	
+	<mx:Text
+		id="sc_instruction"
+		horizontalCenter="0" 
+		verticalCenter="0"
+		width="80%" 
+		fontFamily="Arial" 
+		fontSize="36" 
+		textDecoration="none" 
+		fontWeight="bold" 
+		fontStyle="normal"		
+		selectable="false"
+		textAlign="center"/>
+	
+	<s:Label 
+		id="sc_suppl_instruction_text_2"
+		text="Click 'Continue' and do as instructed." 
+		verticalAlign="middle" 
+		visible="false"
+		horizontalCenter="0" 
+		verticalCenter="50"
+		width="100%" 
+		fontFamily="Arial" 
+		fontSize="24" 
+		color="#666666"/>
+	
+</s:TitleWindow>
